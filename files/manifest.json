@@ -1,13 +1,14 @@
 {
     "manifest_version": 2,
     "name": "Selection rectangle highlighting",
-    "version": "1.0",
+    "version": "1.1",
     "author": "Martin Huber (mjh.at)",
-    "homepage_url": "https://chrome.mjh.at/selection_rectangle_highlighting/",
+
     "icons": {
         "16": "icon16.png",
         "32": "icon32.png",
-        "64": "icon64.png"
+        "64": "icon64.png",
+        "128": "icon128.png"
     },
 
     "description": "Highlight any part of a page by drawing a selection rectangle like on your desktop.",
