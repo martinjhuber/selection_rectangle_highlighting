@@ -1,0 +1,16 @@
+{
+    "ext_description" : {
+        "message" : "Markiere beliebige Teile der Seite, indem du ein Auswahlrechteck mit deiner Maus ziehst."
+    },
+
+    "options_title" : {
+        "message" : "Optionen"
+    },
+    "permanent_mode" : {
+        "message" : "Permanent-Modus"
+    },
+
+    "help_text" : {
+        "message" : "<b>Hilfe text</b><br/>Hilfeeeeeee!"
+    }
+}

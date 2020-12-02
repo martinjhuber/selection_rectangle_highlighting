@@ -1,0 +1,20 @@
+{
+    "ext_description" : {
+        "message" : "Highlight any part of a page by drawing a selection rectangle like on your desktop.",
+        "description" : "Extension description"
+    },
+
+    "options_title" : {
+        "message" : "Selection options",
+        "description" : "Options window title"
+    },
+    "permanent_mode" : {
+        "message" : "Permanent mode",
+        "description" : "Permanent mode checkbox label"
+    },
+
+    "help_text" : {
+        "message" : "<b>Help text</b><br/>This is the help text you were waiting for.",
+        "description" : "Help text in modal window that describes the functionality"
+    }
+}
