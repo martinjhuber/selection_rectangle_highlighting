@@ -4,8 +4,8 @@
         "description" : "Extension description"
     },
 
-    "options_title" : {
-        "message" : "Selection options",
+    "options_heading" : {
+        "message" : "Options",
         "description" : "Options window title"
     },
     "permanent_mode" : {
@@ -13,8 +13,26 @@
         "description" : "Permanent mode checkbox label"
     },
 
+    "minimize_title" : {
+        "message" : "Minimize",
+        "description" : "Minimize button tooltip"
+    },
+    "maximize_title" : {
+        "message" : "Maximize",
+        "description" : "Maximize button tooltip"
+    },
+    "help_title" : {
+        "message" : "Help",
+        "description" : "Help button tooltip"
+    },
+
     "help_text" : {
-        "message" : "<b>Help text</b><br/>This is the help text you were waiting for.",
+        "message" : "<div class='srh_modal_h1'>Selection Rectangle Highlighting v2.0</div><div class='srh_modal_h2'>General usage</div><div class='srh_modal_p'>By clicking the Selection Rectangle Highlighting icon in the Chrome extension bar (usually to the right of the address bar) you activate the highlighting mode. You can draw selection rectangles by clicking and holding down your mouse button on any area of the current page. The extension needs to be activated on every page/tab you want to use it.</div><div class='srh_modal_p'>Additionally, an option window will open that allows you to change the color of the rectangle that you are drawing. You can minimize this window by clicking the arrow in the top right corner of it. If the window is obscuring important parts of your page, you can move it around by drag and drop.</div><div class='srh_modal_h2'>Permanent mode</div><div class='srh_modal_p'>In default mode, your drawn rectangles disappear as soon as you release your mouse button. If you activate \"permanent mode\" by checking the box in the options window, all your rectangles will stay on the page.</div><div class='srh_modal_p'>You can remove individual rectangles by clicking them. To remove all rectangles, disable \"permanent mode\" again or press the \"C\" key on your keyboard.</div><div class='srh_modal_h2'>Disable</div><div class='srh_modal_p'>If you want to stop using the Selection Rectangle Highlighting functionality and want to access the content of the page as usual, you can either click the SRH icon once again, click the \"X\" in the options window, or hit the \"Escape\" key on your keyboard.</div><div class='srh_modal_h2'>Limitations</div><div class='srh_modal_p'>By design of the Chrome browser, you cannot use this extensions on any Chrome Web Store page or on internal pages with chrome:// URLs. If you want to use it on local file:// URL pages, you need to manually authorize this in the Chrome extension management area.</div><div class='srh_modal_h2'>Keyboard shortcuts</div><div class='srh_modal_p'>ESC ... disable drawing mode and close options window<br/>1-6 ... change the rectangle color with the number keys from 1 to 6<br/>P ... enable/disable permanent mode<br/>C ... clear all rectangles in permanent mode</div><div class='srh_modal_h2'>Contact the developer</div><div class='srh_modal_p'>Visit my page: <a href='https://www.mjh.at/'>mjh.at</a></div>",
         "description" : "Help text in modal window that describes the functionality"
+    },
+
+    "launch_error" : {
+        "message" : "Usage prevented by the browser. Please try again on a different page. This extension cannot be used on chrome:// URLs or on the Chrome Web Store. It works on file:// URLs if you authorize it via the extension management page in Chrome.",
+        "description" : "Error message that is shown if the extension cannot be used on the current page"
     }
 }

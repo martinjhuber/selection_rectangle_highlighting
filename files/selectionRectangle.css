@@ -23,20 +23,21 @@
     border: 1px solid #CCC !important;
     border-radius: 8px !important;
     box-shadow: rgba(50, 50, 50, 0.5) 0 0 10px !important;
-    font-family: Verdana, Geneva, Tahoma, sans-serif !important;
-    font-weight: bold !important;
     font-size: 12px !important;
-    line-height: 1.2 !important;
-    color: #666 !important;
     cursor: move !important;
-    letter-spacing: normal !important;
     user-select: none !important;
 }
 
-.srh_h1 {
+.srh_options * {
     font-family: Verdana, Geneva, Tahoma, sans-serif !important;
+    font-weight: normal !important;
+    line-height: 1.2 !important;
+    color: #666 !important;
+    letter-spacing: normal !important;
+}
+
+.srh_h1 {
     font-weight: bold !important;
-    font-variant: small-caps !important;
     font-size: 12px !important;
 }
 
@@ -55,22 +56,20 @@
     margin-top: 5px !important;
 }
 
-.srh_yellow { background-color: #FFC107 !important }
-.srh_red { background-color: #DC3545 !important; }
-.srh_blue { background-color: #007BFF !important; }
-.srh_green { background-color: #28A745 !important; }
+.srh_yellow { background-color: #FFD942 !important }
+.srh_red { background-color: #DB4A59 !important; }
+.srh_blue { background-color: #238DFF !important; }
+.srh_green { background-color: #3EC158 !important; }
 .srh_white { background-color: #E3E3E3 !important; }
 .srh_black { background-color: #333 !important; }
 
 .srh_active { border-color: #888 !important; }
 
 .srh_flags {
-    margin-top: 5px;
+    margin-top: 5px !important;
 }
 
 .srh_flags label {
-    font-family: Verdana, Geneva, Tahoma, sans-serif !important;
-    font-weight: normal !important;
     font-size: 12px !important;
     line-height: 21px !important;
     cursor: pointer !important;
@@ -102,8 +101,8 @@
 }
 
 .srh_control_button {
-    font-family: Verdana, Geneva, Tahoma, sans-serif !important;
     font-size: 13px !important;
+    font-weight: bold !important;
     line-height: 13px !important;
     cursor: pointer !important;
     position: absolute;
@@ -111,6 +110,7 @@
 }
 
 .srh_control_help {
+    font-weight: bold !important;
     right: 22px;
 }
 
@@ -136,20 +136,50 @@
     background-color: rgba(0,0,0,0.4) !important;
 }
 
+.srh_modal * {
+    font-family: Verdana, Geneva, Tahoma, sans-serif !important;
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+    color: #333 !important;
+    letter-spacing: normal !important;
+}
+
 .srh_modal_content {
     position: relative !important;
     color: #333 !important;
     background-color: #EEE !important;
-    margin: 15% auto !important;
+    margin: 40px auto !important;
     padding: 12px 20px !important;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.2) !important;
     width: 60% !important;
+    max-width: 600px !important;
     animation-name: srh_animatetop;
     animation-duration: 0.5s;
-    font-family: Verdana, Geneva, Tahoma, sans-serif !important;
-    font-weight: normal !important;
+}
+
+.srh_modal_content .srh_modal_h1 {
+    font-weight: bold !important;
+    font-size: 16px !important;
+    margin-top: 6px;
+    margin-bottom: 10px;
+}
+
+.srh_modal_content .srh_modal_h2 {
+    font-weight: bold !important;
     font-size: 14px !important;
-    line-height: 1.2 !important;
+    margin-top: 10px;
+    margin-bottom: 6px;
+}
+
+.srh_modal_content .srh_modal_p {
+    margin-bottom: 6px;
+}
+
+.srh_modal_content .srh_modal_p a,
+.srh_modal_content .srh_modal_p a:hover,
+.srh_modal_content .srh_modal_p a:visited {
+    color: #0099FF !important;
+    text-decoration: underline;
 }
 
 @keyframes srh_animatetop {

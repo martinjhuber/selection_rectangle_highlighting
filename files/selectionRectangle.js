@@ -153,7 +153,7 @@ if (!selectionRectangle) {
         }
 
         static optionsHtml = `
-        <div id="srh_options_title" class="srh_h1">Selection Options</div>
+        <div id="srh_options_heading" class="srh_h1">Options</div>
         <div id="srh_maximized">
             <div class="srh_colors">
                 <div class="srh_color_button srh_yellow" id="srh_yellow"> </div><div class="srh_color_button srh_blue" id="srh_blue"></div><div class="srh_color_button srh_green" id="srh_green"></div><div class="srh_color_button srh_red" id="srh_red"></div><div class="srh_color_button srh_white" id="srh_white"></div><div class="srh_color_button srh_black" id="srh_black"></div>
@@ -199,7 +199,7 @@ if (!selectionRectangle) {
                 });
 
             document.getElementById('srh_permanent').addEventListener('click', 
-                () => this.switchPermanentMode());
+                () => this.switchPermanentMode(false));
 
             document.getElementById('srh_help').addEventListener('click', () => {
                     let helpModal = document.createElement("div");
@@ -218,9 +218,14 @@ if (!selectionRectangle) {
             this.optionsDragData = { isDragged: false, sX: 0, sY: 0 };
 
             // i18n
-            let translateInnerHtml = ["options_title", "permanent_mode"];
+            let translateInnerHtml = ["options_heading", "permanent_mode"];
             for (let t of translateInnerHtml) {
                 document.getElementById('srh_'+t).innerHTML = chrome.i18n.getMessage(t);
+            }
+
+            let translateTitle = ["minimize", "maximize", "help"];
+            for (let t of translateTitle) {
+                document.getElementById('srh_'+t).setAttribute("title", chrome.i18n.getMessage(t+"_title"));
             }
 
         }
@@ -269,7 +274,11 @@ if (!selectionRectangle) {
             this.clearCanvas();
         }
 
-        switchPermanentMode () {
+        switchPermanentMode (changeCheckedStatus) {
+            if (changeCheckedStatus) {
+                let checkbox = document.getElementById("srh_permanent");
+                checkbox.checked = !checkbox.checked;
+            }
             if (!this.isPermanentMode()) {
                 this.removeAllPermanentBoxes();
             }
@@ -317,6 +326,26 @@ if (!selectionRectangle) {
             } else if (e.key === "c") {
                 selectionRectangle.removeAllPermanentBoxes();
                 e.stopPropagation();
+            } else if (e.key === "p") {
+                selectionRectangle.switchPermanentMode(true);
+                e.stopPropagation();
+            }
+
+            let colorKeys = {
+                "1" : "yellow",
+                "2" : "blue",
+                "3" : "green",
+                "4" : "red",
+                "5" : "white",
+                "6" : "black"
+            };
+
+            for (let key in colorKeys) {
+                if (e.key === key) {
+                    selectionRectangle.setColor(colorKeys[key]);
+                    e.stopPropagation();
+                    break;
+                }
             }
         }
     });
