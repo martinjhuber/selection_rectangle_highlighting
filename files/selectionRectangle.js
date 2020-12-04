@@ -13,6 +13,7 @@ if (!selectionRectangle) {
             this.canvasElementId = canvasElementId;
             this.optionsElementId = optionsElementId;
 
+            this.activeColor = null;
             this.canvas = null;
             this.startX = null, this.startY = null, this.isDraw = false;
             this.permanentSelectionBoxes = [];
@@ -44,15 +45,15 @@ if (!selectionRectangle) {
             Array.from(elems).forEach(elem => {
                 elem.className = elem.className.replace(" srh_active", "");
             });
-            document.getElementById("srh_"+color).className += " srh_active"; 
-
+            document.getElementById("srh_color_"+color).className += " srh_active"; 
+            this.activeColor = color;
+            this.updateMinimizedOptionsTitle();
         }
 
         setRectRGBA (r, g, b, bgTransparency, borderTransparency) {
             let base = "rgba("+r+","+g+","+b+",";
             this.rectangleBackgroundColor = base + bgTransparency + ")";
             this.rectangleBorderColor = base + borderTransparency + ")";
-
         }
 
         createCanvas () {
@@ -79,21 +80,11 @@ if (!selectionRectangle) {
         }
 
         drawPermanentSelectionBoxes () {
+            let scrollLeft = document.documentElement.scrollLeft;
+            let scrollTop = document.documentElement.scrollTop;            
             for (let box of this.permanentSelectionBoxes) {
-                this.drawBox(box.sX, box.sY, box.eX, box.eY, box.bgColor, box.borderColor);
+                this.drawBox(box.sX - scrollLeft, box.sY - scrollTop, box.eX - scrollLeft, box.eY - scrollTop, box.bgColor, box.borderColor);
             }
-        }
-
-        drawSelectionBox (sX, sY, eX, eY) {
-            if (!this.canvas) return;
-
-            this.clearCanvas();
-            let context = this.canvas.getContext("2d");
-            context.fillStyle = this.rectangleBackgroundColor;
-            context.fillRect(sX+0.5, sY+0.5, eX-sX, eY-sY);
-            context.strokeStyle = this.rectangleBorderColor;
-            context.lineWidth = 1.0;
-            context.strokeRect(sX+0.5, sY+0.5, eX-sX, eY-sY);
         }
 
         drawBox (sX, sY, eX, eY, bgColor, borderColor) {
@@ -115,6 +106,12 @@ if (!selectionRectangle) {
             this.canvas.height = document.documentElement.clientHeight;
 
             this.clearCanvas();
+
+            if (this.options) {     // move options window back to initial position
+                this.options.style.top = "10px";
+                this.options.style.left = "auto";
+                this.options.style.right = "10px";
+            }
         }
 
         mouseEvent (eventType, event) {
@@ -124,7 +121,6 @@ if (!selectionRectangle) {
                 this.startX = x;
                 this.startY = y;
                 this.isDraw = true;
-                console.log("down");
             } else if (eventType == 'move') {
                 if (this.isDraw) {
                     this.clearCanvas();
@@ -132,16 +128,17 @@ if (!selectionRectangle) {
                         this.rectangleBackgroundColor, this.rectangleBorderColor);
                 }
             } else if (eventType == 'up' || eventType == 'out') {
-                console.log("up");
                 if (this.isDraw && this.isPermanentMode()) {
+                    let scrollLeft = document.documentElement.scrollLeft;
+                    let scrollTop = document.documentElement.scrollTop;
                     if (Math.abs(this.startX - x) <= 2 && 
                         Math.abs(this.startY - y) <= 2) {
                             // interpret this as a click rather than drawing
-                            this.removePermanentBox(x, y);
+                            this.removePermanentBox(scrollLeft + x, scrollTop + y);
                     } else {
                         this.permanentSelectionBoxes.push({ 
-                            sX: this.startX, sY: this.startY, 
-                            eX: x, eY: y,
+                            sX: scrollLeft + this.startX, sY: scrollTop + this.startY, 
+                            eX: scrollLeft + x, eY: scrollTop + y,
                             bgColor: this.rectangleBackgroundColor,
                             borderColor: this.rectangleBorderColor
                         });
@@ -153,10 +150,11 @@ if (!selectionRectangle) {
         }
 
         static optionsHtml = `
-        <div id="srh_options_heading" class="srh_h1">Options</div>
+        
         <div id="srh_maximized">
+            <div id="srh_options_heading" class="srh_h1">Options</div>
             <div class="srh_colors">
-                <div class="srh_color_button srh_yellow" id="srh_yellow"> </div><div class="srh_color_button srh_blue" id="srh_blue"></div><div class="srh_color_button srh_green" id="srh_green"></div><div class="srh_color_button srh_red" id="srh_red"></div><div class="srh_color_button srh_white" id="srh_white"></div><div class="srh_color_button srh_black" id="srh_black"></div>
+                <div class="srh_color_button srh_yellow" id="srh_color_yellow"> </div><div class="srh_color_button srh_blue" id="srh_color_blue"></div><div class="srh_color_button srh_green" id="srh_color_green"></div><div class="srh_color_button srh_red" id="srh_color_red"></div><div class="srh_color_button srh_white" id="srh_color_white"></div><div class="srh_color_button srh_black" id="srh_color_black"></div>
             </div>
             <div class="srh_flags">
                 <input type="checkbox" id="srh_permanent" name="permanent"/>
@@ -165,6 +163,7 @@ if (!selectionRectangle) {
             <div class="srh_control_button srh_control_minmax" id="srh_minimize" title="Minimize">▲</div>
         </div>
         <div id="srh_minimized" style="display: none">
+            <div id="srh_options_heading_minimized" class="srh_h1">Options</div>
             <div class="srh_control_button srh_control_minmax" id="srh_maximize" title="Maximize">▼</div>
         </div>
         <div class="srh_control_button srh_control_help" id="srh_help" title="Help">?</div>
@@ -183,7 +182,7 @@ if (!selectionRectangle) {
 
             let colors = ['yellow', 'blue', 'green', 'red', 'white', 'black'];
             for (let color of colors) {
-                document.getElementById('srh_'+color).addEventListener('click', 
+                document.getElementById('srh_color_'+color).addEventListener('click', 
                     () => this.setColor(color));
             }
             document.getElementById('srh_close').addEventListener("click", 
@@ -223,9 +222,9 @@ if (!selectionRectangle) {
                 document.getElementById('srh_'+t).innerHTML = chrome.i18n.getMessage(t);
             }
 
-            let translateTitle = ["minimize", "maximize", "help"];
+            let translateTitle = ["minimize", "maximize", "help", "color_yellow", "color_blue", "color_green", "color_red", "color_white", "color_black"];
             for (let t of translateTitle) {
-                document.getElementById('srh_'+t).setAttribute("title", chrome.i18n.getMessage(t+"_title"));
+                document.getElementById('srh_'+t).setAttribute("title", chrome.i18n.getMessage(t));
             }
 
         }
@@ -282,11 +281,22 @@ if (!selectionRectangle) {
             if (!this.isPermanentMode()) {
                 this.removeAllPermanentBoxes();
             }
+            this.updateMinimizedOptionsTitle();
         }
 
         isPermanentMode () {
             let checkBox = document.getElementById("srh_permanent");
             return checkBox && checkBox.checked;
+        }
+
+        updateMinimizedOptionsTitle () {
+            if (this.isEnabled() && this.activeColor) {
+                let title =  chrome.i18n.getMessage("color_"+this.activeColor);
+                if (this.isPermanentMode()) {
+                    title += " ("+chrome.i18n.getMessage("permanent_mode_short")+")";
+                }
+                document.getElementById("srh_options_heading_minimized").innerHTML = title;
+            }
         }
 
         enable () {
@@ -318,6 +328,7 @@ if (!selectionRectangle) {
     selectionRectangle = new SelectionRectangle('selectionRectangle_canvas','selectionRectangle_options');
 
     window.addEventListener("resize", () => selectionRectangle.canvasResize());
+    document.addEventListener("scroll", () => selectionRectangle.clearCanvas());
     document.addEventListener("keydown", (e) => {
         if (selectionRectangle.isEnabled()) {
             if (e.key === "Escape") {

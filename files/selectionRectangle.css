@@ -34,6 +34,8 @@
     line-height: 1.2 !important;
     color: #666 !important;
     letter-spacing: normal !important;
+    text-transform: none !important;
+    font-variant: normal !important;
 }
 
 .srh_h1 {
@@ -142,6 +144,8 @@
     line-height: 1.2 !important;
     color: #333 !important;
     letter-spacing: normal !important;
+    text-transform: none !important;
+    font-variant: normal !important;    
 }
 
 .srh_modal_content {
