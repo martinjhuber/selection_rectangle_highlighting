@@ -1,7 +1,7 @@
 {
-    "manifest_version": 2,
+    "manifest_version": 3,
     "name": "Selection Rectangle Highlighting",
-    "version": "2.0",
+    "version": "2.1",
     "author": "Martin Huber (mjh.at)",
 
     "default_locale": "en",
@@ -16,18 +16,17 @@
 
     "description": "__MSG_ext_description__",
 
-    "browser_action": {
+    "action": {
        "default_icon": "icon16.png",
        "default_title": "Selection Rectangle Highlighting"
     },
 
     "background": {
-        "persistent": false,
-        "scripts": [ "background.js" ]
+        "service_worker": "background.js"
     },
 
     "offline_enabled": true,
-    "permissions": [ "activeTab" ],
+    "permissions": [ "activeTab", "scripting" ],
 
     "minimum_chrome_version": "51"
  }

@@ -1,4 +1,4 @@
-/* Selection Rectangle Highlighting v2.0
+/* Selection Rectangle Highlighting v2.1
  * Main JS file
  * Author: Martin Huber (mjh.at)
  */
@@ -50,10 +50,38 @@ if (!selectionRectangle) {
             this.updateMinimizedOptionsTitle();
         }
 
+        setBadge (text, color) {
+            chrome.runtime.sendMessage({
+                srh_action: { 
+                    type: "set_badge",
+                    text: text,
+                    color: color,
+                }
+            });
+        }
+
+        updateBadge (color) {
+            if (!color) {
+                color = null;
+            }
+            let text = "";
+
+            if (this.isEnabled()) {
+                if (this.isPermanentMode()) {
+                    text = "perm"
+                } else {
+                    text = "on";
+                }
+            }
+
+            this.setBadge(text, color);
+        }
+
         setRectRGBA (r, g, b, bgTransparency, borderTransparency) {
             let base = "rgba("+r+","+g+","+b+",";
             this.rectangleBackgroundColor = base + bgTransparency + ")";
             this.rectangleBorderColor = base + borderTransparency + ")";
+            this.updateBadge({r: r, g: g, b: b});
         }
 
         createCanvas () {
@@ -150,7 +178,6 @@ if (!selectionRectangle) {
         }
 
         static optionsHtml = `
-        
         <div id="srh_maximized">
             <div id="srh_options_heading" class="srh_h1">Options</div>
             <div class="srh_colors">
@@ -166,8 +193,9 @@ if (!selectionRectangle) {
             <div id="srh_options_heading_minimized" class="srh_h1">Options</div>
             <div class="srh_control_button srh_control_minmax" id="srh_maximize" title="Maximize">▼</div>
         </div>
+        <div class="srh_control_button srh_control_hide" id="srh_hide" title="Hide (H)">👁</div>
         <div class="srh_control_button srh_control_help" id="srh_help" title="Help">?</div>
-        <div class="srh_control_button srh_control_close" id="srh_close" title="Close (or press ESC)">&times;</div>`;
+        <div class="srh_control_button srh_control_close" id="srh_close" title="Close (ESC)">&times;</div>`;
 
         static helpHtml = `<div class="srh_modal_content"><span id="srh_modal_close" class="srh_modal_close">&times;</span><p id="srh_modal_text">...</p></div>`;
 
@@ -197,6 +225,9 @@ if (!selectionRectangle) {
                     document.getElementById("srh_minimized").setAttribute('style', 'display: block');
                 });
 
+            document.getElementById('srh_hide').addEventListener('click', 
+                () => this.optionsHideToggle());
+
             document.getElementById('srh_permanent').addEventListener('click', 
                 () => this.switchPermanentMode(false));
 
@@ -222,7 +253,7 @@ if (!selectionRectangle) {
                 document.getElementById('srh_'+t).innerHTML = chrome.i18n.getMessage(t);
             }
 
-            let translateTitle = ["minimize", "maximize", "help", "color_yellow", "color_blue", "color_green", "color_red", "color_white", "color_black"];
+            let translateTitle = ["minimize", "maximize", "help", "hide", "color_yellow", "color_blue", "color_green", "color_red", "color_white", "color_black"];
             for (let t of translateTitle) {
                 document.getElementById('srh_'+t).setAttribute("title", chrome.i18n.getMessage(t));
             }
@@ -250,6 +281,18 @@ if (!selectionRectangle) {
 
         optionsDrop () {
             this.optionsDragData.isDragged = false;
+        }
+
+        optionsHideToggle () {
+            if (this.isOptionsHidden()) {
+                this.options.className = this.options.className.replace(" hidden", "");
+            } else {
+                this.options.className = this.options.className + " hidden";
+            }
+        }
+
+        isOptionsHidden () {
+            return (this.options.className.indexOf("hidden") >= 0);
         }
 
         removePermanentBox (x, y) {
@@ -281,6 +324,7 @@ if (!selectionRectangle) {
             if (!this.isPermanentMode()) {
                 this.removeAllPermanentBoxes();
             }
+            this.updateBadge();
             this.updateMinimizedOptionsTitle();
         }
 
@@ -314,9 +358,17 @@ if (!selectionRectangle) {
             
             document.body.removeChild(this.canvas);
             document.body.removeChild(this.options);
+
+            let modal = document.getElementById('srh_modal');
+            if (modal) {
+                document.body.removeChild(modal);
+            }
+
             this.permanentSelectionBoxes = [];
             this.canvas = null;
             this.options = null;
+
+            this.updateBadge();
         }
 
         isEnabled () {
@@ -329,36 +381,55 @@ if (!selectionRectangle) {
 
     window.addEventListener("resize", () => selectionRectangle.canvasResize());
     document.addEventListener("scroll", () => selectionRectangle.clearCanvas());
-    document.addEventListener("keydown", (e) => {
+
+    document.body.addEventListener("keypress", (e) => {
         if (selectionRectangle.isEnabled()) {
-            if (e.key === "Escape") {
-                selectionRectangle.remove();
-                e.stopPropagation();
-            } else if (e.key === "c") {
-                selectionRectangle.removeAllPermanentBoxes();
-                e.stopPropagation();
-            } else if (e.key === "p") {
-                selectionRectangle.switchPermanentMode(true);
-                e.stopPropagation();
-            }
+            e.stopImmediatePropagation();
+        }
+    });
 
-            let colorKeys = {
-                "1" : "yellow",
-                "2" : "blue",
-                "3" : "green",
-                "4" : "red",
-                "5" : "white",
-                "6" : "black"
-            };
+    document.body.addEventListener("keyup", (e) => {
+        if (selectionRectangle.isEnabled()) {
+            e.stopImmediatePropagation();
+        }
+    });
 
-            for (let key in colorKeys) {
-                if (e.key === key) {
-                    selectionRectangle.setColor(colorKeys[key]);
-                    e.stopPropagation();
-                    break;
-                }
+    document.body.addEventListener("keydown", (e) => {
+        if (!selectionRectangle.isEnabled()) {
+            return;
+        }
+
+        if (e.key === "Escape") {
+            selectionRectangle.remove();
+            e.stopImmediatePropagation();
+        } else if (e.key === "c") {
+            selectionRectangle.removeAllPermanentBoxes();
+            e.stopImmediatePropagation();
+        } else if (e.key === "p") {
+            selectionRectangle.switchPermanentMode(true);
+            e.stopImmediatePropagation();
+        } else if (e.key === "h") {
+            selectionRectangle.optionsHideToggle();
+            e.stopImmediatePropagation();
+        }
+
+        let colorKeys = {
+            "1" : "yellow",
+            "2" : "blue",
+            "3" : "green",
+            "4" : "red",
+            "5" : "white",
+            "6" : "black"
+        };
+
+        for (let key in colorKeys) {
+            if (e.key === key) {
+                selectionRectangle.setColor(colorKeys[key]);
+                e.stopImmediatePropagation();
+                break;
             }
         }
+
     });
 
     selectionRectangle.enable();
@@ -366,7 +437,11 @@ if (!selectionRectangle) {
 } else {
 
     if (selectionRectangle.isEnabled()) {
-        selectionRectangle.remove();
+        if (selectionRectangle.isOptionsHidden()) {
+            selectionRectangle.optionsHideToggle();
+        } else {
+            selectionRectangle.remove();
+        }
     } else {
         selectionRectangle.enable();
     }

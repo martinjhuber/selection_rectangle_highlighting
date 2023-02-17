@@ -1,4 +1,4 @@
-/* Selection Rectangle Highlighting v2.0
+/* Selection Rectangle Highlighting v2.1
  * CSS for canvas and options area
  * Author: Martin Huber (mjh.at)
  */
@@ -116,8 +116,13 @@
     right: 22px;
 }
 
-.srh_control_minmax {
+.srh_control_hide {
+    font-weight: normal !important;
     right: 31px;
+}
+
+.srh_control_minmax {
+    right: 43px;
 }
 
 .srh_control_close {
@@ -198,4 +203,8 @@
     float: right !important;
     font-weight: bold !important;
     cursor: pointer !important;
+}
+
+.hidden {
+    display: none;
 }

@@ -19,5 +19,17 @@ For more details, please have a look at the help screen of the extension.
 
 ## Supported browsers
 
-* Chrome 51+
-* Edge
+* Google Chrome 51+
+* Microsoft Edge
+
+## Change history
+
+### Version 2.1 (February 2022)
+
+* Preventing key presses for SRH actions to reach the web site when SRH is active (e.g. "c" on Confluence would trigger the "create new page" action)
+* Added possibility to hide the options window (using the "eye" icon)
+* Introduced "H" shortcut key to hide/unhide options window
+* Added a badge to the extension icon in the browser button bar that shows if the extension is active, which color is selected, and if permanent mode is on
+* If the help modal window is shown when the extension is closed, the modal will be removed too
+* Updated help text
+* Updated manifest version to V3
