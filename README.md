@@ -19,7 +19,7 @@ For more details, please have a look at the help screen of the extension.
 
 ## Supported browsers
 
-* Google Chrome 51+
+* Google Chrome 88+
 * Microsoft Edge
 
 ## Change history
